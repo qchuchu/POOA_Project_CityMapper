@@ -3,4 +3,7 @@ class Car:
     sur un trajet en voiture entre deux positions GPS
     """
 
-    def __init__(self, departure)
+    def __init__(self, departure):
+        pass
+
+print('Hello World')
