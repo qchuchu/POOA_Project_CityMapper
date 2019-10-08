@@ -1,4 +1,4 @@
-from helpers import url_here_routing_api
+from gpsapp.helpers import url_here_routing_api
 import requests
 
 class Car:
@@ -12,7 +12,9 @@ class Car:
 
     def get_itinerary(self):
         url = url_here_routing_api(self._waypoint0, self._waypoint1)
-        return requests.get(url).json()['response']['route'][0]['summary']
+        data = requests.get(url).json()['response']['route'][0]['summary']
+        distance = data['distance'] / 1000
+
 
 
 if __name__ == '__main__':
