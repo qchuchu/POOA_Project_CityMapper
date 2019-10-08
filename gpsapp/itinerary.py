@@ -1,25 +1,22 @@
 class Itinerary:
+    """
+    Cette Classe est l'objet itinéraire que renverra chacune des classes de transport
+        :
 
-    def __init__(self,departure,arrival, mode, distance, time, price, steps):
-        self.departure = departure
-        self.arrival = arrival
-        self._mode = mode
-        self._distance = distance
-        self._time = time
-        self._price = price
+        :return:
+    """
+    def __init__(self, origin, destination, steps=[], modes=[], distances=[], times=[], prices=[]):
+        self.origin = origin
+        self.destination = destination
         self._steps = steps
-
-    @property
-    def mode(self):
-        return self._mode
-
-    @mode.setter
-    def mode(self, value):
-        self._mode = value
+        self._modes = modes
+        self._distances = distances
+        self._times = times
+        self._prices = prices
 
     @property
     def distance(self):
-        return self._distance
+        return self._distances
 
     @distance.setter
     def distance(self, value):
@@ -49,10 +46,13 @@ class Itinerary:
     def steps(self, value):
         self._steps = value
 
-    def __str__(self):
-        pass
-
-
     def __add__(self, other):
-        return Itinerary(self.distance + other.distance, self.time + other.time, self.price + other.price, self.steps + other.steps)
+        origin = self.origin
+        destination = other.destination
+        steps = self.steps + [other.origin] + other.steps
+        modes = self.modes + other.modes
+        distances = self.distances + other.distances
+        times = self.times + other.times
+        prices = self.prices + other.prices
+        return Itinerary(origin, destination, steps, modes, distances, times, prices)
 
