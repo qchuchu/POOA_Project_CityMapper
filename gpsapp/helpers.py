@@ -31,6 +31,15 @@ def url_here_weather_api():
     name = "&name=Paris"
     return base + app_id + app_code + product + name
 
+def url_here_public_transport_api():
+    base = 'https://route.api.here.com/routing/7.2/calculateroute.json'
+    app_id = '?app_id=djGZJjsUab93vV3VqBKA'
+    app_code = '&app_code=u3bReKn8wIAuZl74j1iyGA'
+    mode = "&departure=now&mode=fastest;publicTransport&combineChange=true"
+    waypoint0 = '&waypoint0=geo!' + ",".join(waypoint0)
+    waypoint1 = '&waypoint1=geo!' + ",".join(waypoint1)
+    return  base + app_id + app_code + waypoint0 + waypoint1 + mode
+
 scooter_query = """
 query ($lat: Float!, $lng: Float!) {
     vehicles (lat: $lat, lng: $lng, typeVehicles: [SCOOTER]) {
