@@ -21,6 +21,11 @@ class Scooter:
                              headers=headers).json()
         return resp['data']['vehicles'][0]
 
+    def get_itinerary(self):
+        scooter = self.get_closest_scooter
+
+        pass
+
 
 if __name__ == '__main__':
     scooter = Scooter((48.880960, 2.295620), (48.880960, 2.295620))

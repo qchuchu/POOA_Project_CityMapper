@@ -6,14 +6,15 @@ class Car:
     sur un trajet en voiture entre deux positions GPS
     """
 
-    def __init__(self, waypoint0, waypoint1):
-        self._waypoint0 = waypoint0
-        self._waypoint1 = waypoint1
+    def __init__(self, origin, destination):
+        self._origin = origin
+        self._destination = destination
 
     def get_itinerary(self):
-        url = url_here_routing_api(self._waypoint0, self._waypoint1)
+        url = url_here_routing_api(self._origin, self._destination)
         data = requests.get(url).json()['response']['route'][0]['summary']
         distance = data['distance'] / 1000
+        return distance
 
 
 
