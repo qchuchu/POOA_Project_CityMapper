@@ -10,6 +10,8 @@ class Itinerary:
         self._distances = [] if distances is None else distances
         self._times = [] if times is None else times
         self._prices = [] if prices is None else prices
+        #
+        self.is_empty = True
 
     @property
     def distances(self):
