@@ -1,21 +1,19 @@
-from gpsapp.helpers import url_here_routing_api
 import requests
+from gpsapp.transportation import Transportation
 
-class Car:
-    """Cette classe retournera un objet itinéraire qui donnera des informations
-    sur un trajet en voiture entre deux positions GPS
+
+class Car(Transportation):
+    """
+    Class that makes the API call to HERE and return the itinerary by Car
     """
 
-    def __init__(self, origin, destination):
-        self._origin = origin
-        self._destination = destination
-
     def get_itinerary(self):
-        url = url_here_routing_api(self._origin, self._destination)
+        url = self.url_here_routing_api('car')
         data = requests.get(url).json()['response']['route'][0]['summary']
-        distance = data['distance'] / 1000
-        return distance
-
+        self.itinerary.distances.append(data['distance'])
+        self.itinerary.times.append(data['travelTime'])
+        self.itinerary.modes.append('Car')
+        return self.itinerary
 
 
 if __name__ == '__main__':
