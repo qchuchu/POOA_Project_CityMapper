@@ -1,5 +1,5 @@
 from gpsapp.bike import Bike
-
+from gpsapp.leg import Leg
 
 class Scooter(Bike):
 
