@@ -1,5 +1,5 @@
 # This file contains the views of the function
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -10,6 +10,12 @@ app.config.from_object('config')
 @app.route('/')
 def index():
     return "Hello monde !"
+
+
+@app.route('/itinerary', methods=['POST'])
+def get_best_itinerary():
+    # Get the user params and load the model
+    pass
 
 
 if __name__ == "__main__":
