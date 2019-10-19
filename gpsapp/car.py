@@ -1,5 +1,6 @@
 import requests
 from gpsapp.transportation import Transportation
+from leg import Leg
 
 
 class Car(Transportation):
@@ -9,10 +10,11 @@ class Car(Transportation):
 
     def get_itinerary(self):
         url = self.url_here_routing_api('car')
-        data = requests.get(url).json()['response']['route'][0]['summary']
-        self.itinerary.distances.append(data['distance'])
-        self.itinerary.times.append(data['travelTime'])
-        self.itinerary.modes.append('Car')
+        resp = requests.get(url)
+        data = resp.json()['response']['route'][0]['summary']
+        mode = {'type': 'car'}
+        leg = Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])
+        self.itinerary.add(leg)
         return self.itinerary
 
 

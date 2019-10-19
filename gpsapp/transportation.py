@@ -1,5 +1,5 @@
-from gpsapp.views import app
-from gpsapp.itinerary import Itinerary
+from views import app
+from itinerary import Itinerary
 
 
 class Transportation:
@@ -7,11 +7,23 @@ class Transportation:
     def __init__(self, origin, destination):
         self._origin = origin
         self._destination = destination
-        self._itinerary = Itinerary(origin, destination)
+        self._itinerary = Itinerary(origin, destination, self._get_itinerary())
+
+    @property
+    def origin(self):
+        return self._origin
+
+    @property
+    def destination(self):
+        return self._destination
 
     @property
     def itinerary(self):
         return self._itinerary
+
+    # Abstract Method to be overriden in the children classes. The get_itinerary should return a list of legs.
+    def _get_itinerary(self):
+        pass
 
     def url_here_routing_api(self, transport_mode):
         """
@@ -33,4 +45,3 @@ class Transportation:
             mode = "&mode=fastest;" + transport_mode
         language = "&language=fr-fr"
         return base + app_id + app_code + origin + destination + mode + language
-

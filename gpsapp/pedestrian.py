@@ -1,6 +1,6 @@
 import requests
-
-from gpsapp.transportation import Transportation
+from transportation import Transportation
+from leg import Leg
 
 
 class Pedestrian(Transportation):
@@ -9,9 +9,9 @@ class Pedestrian(Transportation):
         url = self.url_here_routing_api('pedestrian')
         resp = requests.get(url)
         data = resp.json()['response']['route'][0]['summary']
-        self.itinerary.distances.append(data['distance'])
-        self.itinerary.times.append(data['travelTime'])
-        self.itinerary.modes.append('Pedestrian')
+        mode = {'type': 'pedestrian'}
+        leg = Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])
+        self.itinerary.add(leg)
         return self.itinerary
 
 

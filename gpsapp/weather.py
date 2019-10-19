@@ -1,5 +1,6 @@
 import requests
 
+
 class Weather:
 
 """This class returns the current weather conditions in Paris"""
@@ -23,7 +24,7 @@ class Weather:
         picture_link = data['observations']['location'][0]['observation'][0]['iconLink']
         temperature = data['observations']['location'][0]['observation'][0]['temperature']
         windspeed = data['observations']['location'][0]['observation'][0]['windSpeed']
-#As the sky descriptions are very precise and we only need basic ones, we group them in 9 categories
+        #As the sky descriptions are very precise and we only need basic ones, we group them in 9 categories
         if sky_desc in ['night_clear','night_clearing_skies','night_mostly_clear','night_passing_clouds','night_scattered_clouds','night_partly_cloudy','cw_no_report_icon']:
             sky_desc = 'clear'
         elif sky_desc in ['increasing_cloudiness','breaks_of_sun_late','afternoon_clouds','morning_clouds','partly_sunny','high_level_clouds','decreasing_cloudiness','clearing_skies','high_clouds','ice_fog','more_clouds_than_sun','broken_clouds','hazy_sunshine','haze','smoke','low_level_haze','fog','dense_fog','night_haze','night_smoke','night_low_level_haze','mostly_cloudy','cloudy','overcast','low_clouds','night_decreasing_cloudiness','night_high_level_clouds','night_high_clouds','increasing_cloudiness','night_afternoon_clouds','night_morning_clouds','night_broken_clouds','night_mostly_cloudy']:
