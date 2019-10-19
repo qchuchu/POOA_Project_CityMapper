@@ -3,11 +3,9 @@ import requests
 
 class Weather:
 
-"""This class returns the current weather conditions in Paris"""
-
-    def __init__(self):
-        pass
-
+    """
+    This class returns the current weather conditions in Paris
+    """
 
     def get_weather(self):
         base = 'https://weather.cit.api.here.com/weather/1.0/report.json?product=observation&'
