@@ -8,7 +8,7 @@ class Car(Transportation):
     Class that makes the API call to HERE and return the itinerary by Car
     """
 
-    def get_itinerary(self):
+    def _get_itinerary(self):
         url = self.url_here_routing_api('car')
         resp = requests.get(url)
         data = resp.json()['response']['route'][0]['summary']

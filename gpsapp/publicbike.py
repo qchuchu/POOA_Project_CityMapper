@@ -42,17 +42,17 @@ class PublicBike(Transportation):
             data = data[0]['fields']['geo']
             return data[0], data[1]
 
-    def get_itinerary(self):
+    def _get_itinerary(self):
         # Get the origin and destination terminal
         # Have to abort if there are no close public bike terminal at the origin / destination
         origin_borne = self.get_closest_public_bike_terminal_origin()
         destination_borne = self.get_closest_public_bike_terminal_destination()
-        pedestrian_origin = Pedestrian(self._origin, origin_borne).get_itinerary()
-        bike_travel = Bike(origin_borne, destination_borne).get_itinerary()
-        pedestrian_destination = Pedestrian(destination_borne, self._destination).get_itinerary()
-        return pedestrian_origin + bike_travel + pedestrian_destination
+        pedestrian_origin = Pedestrian(self.origin, origin_borne).itinerary
+        bike_travel = Bike(origin_borne, destination_borne).itinerary
+        pedestrian_destination = Pedestrian(destination_borne, self.destination).itinerary
+        return (pedestrian_origin + bike_travel + pedestrian_destination).legs
 
 
 if __name__ == '__main__':
-    journey = PublicBike((48.8586, 2.284249999999929), (48.725873, 2.262104))
-    print(journey.get_itinerary())
+    journey = PublicBike((48.871192, 2.351512), (48.840137, 2.351407))
+    print(journey.itinerary.legs)

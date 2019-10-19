@@ -38,7 +38,7 @@ class Transportation:
         app_id = "?app_id=" + app.config['APP_ID']
         app_code = "&app_code=" + app.config['APP_CODE']
         origin = "&waypoint0=geo!{},{}".format(self._origin[0], self._origin[1])
-        destination = "&waypoint1=geo!{},{}".format(self._destination[0], self._destination[1])
+        destination = "&waypoint1=geo!{},{}".format(self.destination[0], self.destination[1])
         if transport_mode == 'public':
             mode = "&departure=now&mode=fastest;publicTransport&combineChange=true"
         else:
