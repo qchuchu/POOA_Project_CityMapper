@@ -11,18 +11,33 @@ class Itinerary:
         # Check if value is Leg
         self._legs.append(value)
 
+    @property
+    def legs(self):
+        return self._legs
+
     def get_total_price(self):
-        pass
+        total_price = 0
+        for i in self.legs:
+            total_price += i.price
+        return total_price
 
     def get_total_distance(self):
-        pass
+        total_distance = 0
+        for i in self.legs:
+            total_distance += i.distance
+        return total_distance
 
     def get_total_duration(self):
-        pass
+        total_duration = 0
+        for i in self.legs:
+            total_duration += i.duration
+        return total_duration
+
+    def get_number_of_legs(self):
+        return len(self.legs)
 
     def __add__(self, other):
         origin = self.origin
         destination = other.destination
         legs = self.legs + other.legs
         return Itinerary(origin, destination, legs)
-

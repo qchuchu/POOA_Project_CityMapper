@@ -1,8 +1,9 @@
 import requests
 
-from gpsapp.transportation import Transportation
-from gpsapp.pedestrian import Pedestrian
-from gpsapp.scooter import Scooter
+from transportation import Transportation
+from pedestrian import Pedestrian
+from scooter import Scooter
+from views import app
 
 scooter_query = """
 query ($lat: Float!, $lng: Float!) {
@@ -31,10 +32,17 @@ class PublicScooter(Transportation):
                              headers=headers).json()
         return resp['data']['vehicles'][0]
 
-    def get_itinerary(self):
+    def _get_itinerary(self):
         scooter = self.get_closest_scooter()
         scooter_location = scooter['lat'], scooter['lng']
-        pedestrian_origin = Pedestrian(self._origin, scooter_location).get_itinerary()
-        scooter_travel = Scooter(scooter_location, self._destination).get_itinerary()
+        pedestrian_origin = Pedestrian(self.origin, scooter_location).itinerary
+        scooter_travel = Scooter(scooter_location, self.destination).itinerary
+        scooter_travel.legs[0].mode = {'type': 'scooter', 'provider': scooter['provider']}
         # We suppose that we can leave the Lime
-        return pedestrian_origin + scooter_travel
+        final = pedestrian_origin + scooter_travel
+        return final.legs
+
+if __name__ == '__main__':
+    print('********TRAJET A LIME**********')
+    journey = PublicScooter((48.8586, 2.284249999999929), (48.725873, 2.262104))
+    print(journey.itinerary.get_number_of_legs())
