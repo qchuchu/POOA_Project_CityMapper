@@ -11,7 +11,7 @@ def get_request(url):
     stat = ""
     stat_code = resp.status_code
     if stat_code == 200:
-        stat = "successfull"
+        stat = "successful"
     else:
         stat = "request failed, please check url"
         if stat_code == 401:
