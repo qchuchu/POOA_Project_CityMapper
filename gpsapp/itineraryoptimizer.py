@@ -23,7 +23,7 @@ class ItineraryOptimizer:
 #on va dire que le user param qui correspond au choix de tri de l'itineraire est un attribut qui s'appelle criteria
 #et qui prend pour valeur un string 'fastest', 'shortest', 'less_steps'
 
-#les users param qui correspondent aux coordonnees de depart et d'arrivee sont respectivement origin et destination
+
 
 
 
@@ -92,21 +92,31 @@ class ItineraryOptimizer:
 
     def calculate_itinerary(self):
 
+    # les users param qui correspondent aux coordonnees de depart et d'arrivee sont respectivement origin et destination
+    #pour l'instant c'est des attributs de la classe leg... a voir comment relier tout ça
+    #je n'ai pas teste cette fonction
+
         if self.transportation_mode['bike']==1:
-            bike0 = Bike(self, origin, destination)
-            itineraries = itineraries + [bike0.get_itinerary()]
+            bike0 = Bike()
+            itineraries = itineraries + [bike0._get_itinerary()]
         if self.transportation_mode['car']==1:
-            itineraries = itineraries + [Car()]
+            car0 = Car()
+            itineraries = itineraries + [car0._get_itinerary()]
         if self.transportation_mode['pedestrian']==1:
-            itineraries = itineraries + [Pedestrian()]
+            pedestrian0 = Pedestrian()
+            itineraries = itineraries + [pedestrian0._get_itinerary()]
         if self.transportation_mode['scooter'] == 1:
-            itineraries = itineraries + [Scooter()]
+            scooter0 = Scooter()
+            itineraries = itineraries + [scooter0._get_itinerary()]
         if self.transportation_mode['publicbike'] == 1:
-            itineraries = itineraries + [PublicBike()]
+            publicbike0 = PublicBike()
+            itineraries = itineraries + [publicbike0._get_itinerary()]
         if self.transportation_mode['publictransport'] == 1:
-            itineraries = itineraries + [PublicTransport()]
+            publictransport0 = PublicTransport()
+            itineraries = itineraries + [publictransport0._get_itinerary()]
         if self.transportation_mode['publicscooter']==1:
-            itineraries = itineraries + [PublicScooter()]
+            publicscooter0 = PublicScooter()
+            itineraries = itineraries + [publicscooter0._get_itinerary()]
 
         return itineraries
 
