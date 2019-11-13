@@ -6,24 +6,32 @@ from leg import Leg
 
 class PublicTransport(Transportation):
 
-    dict_keys = {'station' : 'station', 'line' : 'line', 'departure_station' : 'station', 'arrival_station':'destination', 'number of stops':'stops', 'next street' : 'next-street'}
+    dict_keys = {'station': 'station',
+                 'line': 'line',
+                 'departure_station': 'station',
+                 'arrival_station': 'destination',
+                 'number of stops': 'stops',
+                 'next street': 'next-street'}
 
     def _get_itinerary(self):
         legs = []
-        legit = (1, 'legit itinerary')
+        legit = (1, 'legit_itinerary')
         url = self.url_here_routing_api('public')
         print(url)
-        resp, stat = get_request(url)
+        response, status = get_request(url)
         legs = []
-        if stat != "successfull":
-            legit = (0, stat)
-            return([], legit)
+        # Check if we can contact the HERE API
+        if status != "successful":
+            legit = (0, status)
+            return [], legit
         else:
             try:
-                data = resp.json()['response']['route'][0]['leg'][0]['maneuver']
+                data = response.json()['response']['route'][0]['leg'][0]['maneuver']
             except:
+                # Except there is a key error
                 legit = (0, "error in parsing data")
-                return ([], legit)
+                return [], legit
+            # Modify i - It's not a clear variable. Use step
             for i in data:
                 try:
                     position = i["position"]
@@ -33,19 +41,22 @@ class PublicTransport(Transportation):
                     mode = {}
                     soup = BeautifulSoup(i['instruction'], "html.parser")
                     try:
-                        transport_mode = soup.find_all('span', attrs={"class" : u"transit"})[0].string
+                        transport_mode = soup.find_all('span', attrs={"class": u"transit"})[0].string
                     except:
+                        # Except the find_all don't work. Que fais string ?
                         transport_mode = "pedestrian"
                     mode['transport_mode'] = transport_mode
+                    # Use key legInformation
                     for l in self.dict_keys.keys():
                         try:
                             mode[l] = soup.find_all('span', attrs={"class" : self.dict_keys[l]})[0].string
+                        # Définir le type d'erreur
                         except:
                             pass
                     legs.append(Leg(origin, origin, mode, distance, duration, None))
                 except:
                     pass
-            return (legs,legit)
+            return legs,legit
 
 
 if __name__ == '__main__':
