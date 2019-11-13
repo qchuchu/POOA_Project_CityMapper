@@ -1,5 +1,29 @@
 from views import app
 from itinerary import Itinerary
+import requests
+
+def get_request(url):
+    try:
+        resp = requests.get(url)
+    except requests.ConnectionError:
+        print("Please Check your internet connection !")
+        return [None, "connection error"]
+    stat = ""
+    stat_code = resp.status_code
+    if stat_code == 200:
+        stat = "successfull"
+    else:
+        stat = "request failed, please check url"
+        if stat_code == 401:
+            stat += " : unidentified user"
+        if stat_code == 403:
+            stat += " : refused access"
+        if stat_code == 404:
+            stat += " : not found"
+        if stat_code in [500, 503, 504]:
+            stat += " : servor did not answered"
+    return [resp, stat]
+
 
 
 class Transportation:
@@ -7,7 +31,8 @@ class Transportation:
     def __init__(self, origin, destination):
         self._origin = origin
         self._destination = destination
-        self._itinerary = Itinerary(origin, destination, self._get_itinerary())
+        self._itinerary = Itinerary(origin, destination, self._get_itinerary()[0], self._get_itinerary()[1])
+        self._legit = self._get_itinerary()[1]
 
     @property
     def origin(self):
