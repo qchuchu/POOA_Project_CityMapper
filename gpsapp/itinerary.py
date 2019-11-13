@@ -2,10 +2,17 @@ class Itinerary:
     """
     Itinerary object that contains all the information about the itinerary given an origin and a destination
     """
-    def __init__(self, origin, destination, legs=None):
+    def __init__(self, origin, destination, legs=None, legit = None):
         self.origin = origin
         self.destination = destination
         self._legs = [] if legs is None else legs
+        if legit is None:
+            if legs is None:
+                self._legit = (0, "legs empty")
+            else:
+                self._legit = (1, "legs unempty")
+        else:
+            self._legit = legit
 
     def add(self, value):
         # Check if value is Leg

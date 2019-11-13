@@ -33,8 +33,13 @@ class PublicScooter(Transportation):
         return resp['data']['vehicles'][0]
 
     def _get_itinerary(self):
-        scooter = self.get_closest_scooter()
-        scooter_location = scooter['lat'], scooter['lng']
+        legit = (1 , 'legit itinerary')
+        try:
+            scooter = self.get_closest_scooter()
+            scooter_location = scooter['lat'], scooter['lng']
+        except:
+            legit = (0, 'no scooter found')
+            return ([], legit)
         pedestrian_origin = Pedestrian(self.origin, scooter_location).itinerary
         scooter_travel = Scooter(scooter_location, self.destination).itinerary
         scooter_travel.legs[0].mode = {'type': 'scooter', 'provider': scooter['provider']}
