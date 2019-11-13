@@ -1,8 +1,8 @@
 import requests
 
-from gpsapp.transportation import Transportation
-from gpsapp.pedestrian import Pedestrian
-from gpsapp.bike import Bike
+from transportation import Transportation, get_request
+from pedestrian import Pedestrian
+from bike import Bike
 
 
 class PublicBike(Transportation):
@@ -24,35 +24,64 @@ class PublicBike(Transportation):
     def get_closest_public_bike_terminal_origin(self):
         # Return something
         url = self.url_origin_terminal_public_bike_api()
-        resp = requests.get(url)
-        data = resp.json()['records']
-        if not data:
-            print('Pas de vélib dispos')
+        response, status = get_request(url)
+        if status != "successful":
+            return status
         else:
-            data = data[0]['fields']['geo']
-            return data[0], data[1]
+            try:
+                data = response.json()['records'][0]['fields']['geo']
+            except KeyError as e:
+                return "KeyError"
+        return data[0], data[1]
 
     def get_closest_public_bike_terminal_destination(self):
         url = self.url_destination_terminal_public_bike_api()
-        resp = requests.get(url)
-        data = resp.json()['records']
-        if not data:
-            print('Impossible de reposer le velib à proximité')
+        response, status = get_request(url)
+        if status != "successful":
+            return status
         else:
-            data = data[0]['fields']['geo']
-            return data[0], data[1]
+            try:
+                data = response.json()['records'][0]['fields']['geo']
+            except KeyError as e:
+                return "KeyError"
+        return data[0], data[1]
 
     def _get_itinerary(self):
-        # Get the origin and destination terminal
-        # Have to abort if there are no close public bike terminal at the origin / destination
         origin_borne = self.get_closest_public_bike_terminal_origin()
+        try:
+            assert (type(origin_borne) == tuple)
+        except AssertionError as e:
+            return [], (0, origin_borne)
+
         destination_borne = self.get_closest_public_bike_terminal_destination()
-        pedestrian_origin = Pedestrian(self.origin, origin_borne).itinerary
-        bike_travel = Bike(origin_borne, destination_borne).itinerary
-        pedestrian_destination = Pedestrian(destination_borne, self.destination).itinerary
-        return (pedestrian_origin + bike_travel + pedestrian_destination).legs
+        try:
+            assert (type(destination_borne) == tuple)
+        except AssertionError as e:
+            return [], (0, destination_borne)
+
+        pedestrian_origin = Pedestrian(self.origin, origin_borne)
+        try:
+            assert (pedestrian_origin.legit == (1, "legit itinerary"))
+        except AssertionError as e:
+            return [], pedestrian_origin.legit
+
+        bike_travel = Bike(origin_borne, destination_borne)
+        try:
+            assert (bike_travel.legit == (1, "legit itinerary"))
+        except AssertionError as e:
+            return [], bike_travel.legit
+
+        pedestrian_destination = Pedestrian(destination_borne, self.destination)
+        try:
+            assert (pedestrian_destination.legit == (1, "legit itinerary"))
+
+        except AssertionError as e:
+            return [], pedestrian_destination.legit
+
+        itinerary = pedestrian_origin.itinerary + bike_travel.itinerary + pedestrian_destination.itinerary
+        return itinerary.legs, (1, "legit itinerary")
 
 
 if __name__ == '__main__':
     journey = PublicBike((48.871192, 2.351512), (48.840137, 2.351407))
-    print(journey.itinerary.legs)
+    print(journey.itinerary)
