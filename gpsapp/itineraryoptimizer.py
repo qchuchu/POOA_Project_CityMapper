@@ -17,6 +17,7 @@ class ItineraryOptimizer:
     """
     This class will optimize the different API Calls
     """
+
     def __init__(self, user_params):
         for key, value in user_params.items():
             setattr(self, "_" + key, value)
@@ -26,7 +27,7 @@ class ItineraryOptimizer:
 
     def _select_itineraries(self):
         # This fonction selects only the self._itineraries that the user can take based on the parameters he entered
-        self._weather_filter()
+        #self._weather_filter()
         self._has_car()
         self._has_scooter()
         self._has_bike()

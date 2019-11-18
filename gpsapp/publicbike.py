@@ -43,8 +43,8 @@ class PublicBike(Transportation):
         else:
             try:
                 data = response.json()['records'][0]['fields']['geo']
-            except KeyError as e:
-                return "KeyError"
+            except (KeyError, IndexError) as e:
+                return e
         return data[0], data[1]
 
     def _get_itinerary(self):
