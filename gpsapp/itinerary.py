@@ -19,6 +19,10 @@ class Itinerary:
         self._legs.append(value)
 
     @property
+    def legit(self):
+        return self._legit
+
+    @property
     def legs(self):
         return self._legs
 

@@ -7,6 +7,10 @@ class Weather:
     This class returns the current weather conditions in Paris
     """
 
+    def __init__(self):
+        pass
+
+
     def get_weather(self):
         base = 'https://weather.cit.api.here.com/weather/1.0/report.json?product=observation&'
         city = 'name=Paris'
@@ -15,7 +19,7 @@ class Weather:
         app_code = "&app_code=" + 'u3bReKn8wIAuZl74j1iyGA'
         # app_code = "&app_code=" + app.config['APP_CODE']
         url = base + city + app_id + app_code
-        print(url)
+        #print(url)
         resp = requests.get(url)
         data = resp.json()
         sky_desc = data['observations']['location'][0]['observation'][0]['iconName']
@@ -35,11 +39,15 @@ class Weather:
             sky_desc = 'snowy'
         elif sky_desc == 'hurricane':
             sky_desc = 'hurricane'
+        elif sky_desc in ['strong_thunderstorms','severe_thunderstorms','thundershowers','thunderstorms','tstorms_early','isolated_tstorms_late','scattered_tstorms_late','tstorms_late','tstorms','widely_scattered_tstorms','isolated_tstorms','a_few_tstorms','scattered_tstorms','night_widely_scattered_tstorms','night_isolated_tstorms','night_a_few_tstorms','night_scattered_tstorms','night_tstorms','tropical_storm','sandstorm','duststorm']:
+            sky_desc = 'stormy'
         elif sky_desc in ['sunny','clear','mostly_sunny','mostly_clear','passing_clounds','more_sun_than_clouds','scattered_clouds','partly_cloudy','a_mixture_of_sun_and_clouds','early_fog_followed_by_sunny_skies','early_fog','light_fog']:
             sky_desc = 'sunny'
-        else :
+        elif sky_desc == 'tornado':
             sky_desc = 'tornado'
-        print ([sky_desc, picture_link, temperature, windspeed])
+        else:
+            sky_desc = 'clear'
+        return ([sky_desc, picture_link, temperature, windspeed])
 
 #meteo = Weather()
 #meteo.get_weather()

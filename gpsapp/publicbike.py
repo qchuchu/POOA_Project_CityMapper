@@ -1,8 +1,8 @@
 import requests
 
-from gpsapp.transportation import Transportation
-from gpsapp.pedestrian import Pedestrian
-from gpsapp.bike import Bike
+from transportation import Transportation
+from pedestrian import Pedestrian
+from bike import Bike
 
 
 class PublicBike(Transportation):

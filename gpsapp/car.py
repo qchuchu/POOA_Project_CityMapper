@@ -1,5 +1,5 @@
 import requests
-from gpsapp.transportation import Transportation, get_request
+from transportation import Transportation, get_request
 from leg import Leg
 
 
