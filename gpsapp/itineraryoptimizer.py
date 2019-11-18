@@ -109,43 +109,43 @@ class ItineraryOptimizer:
         if transportation['bike']==1:
             bike = Bike(self._user_params['origin'], self._user_params['destination'])
             #bike = Bike(self.origin, self.destination)
-            if bike.itinerary.legit[0]==1:
+            if bike.itinerary.legit[0]==0:
                 itineraries = itineraries + [bike.itinerary]
 
         if transportation['car'] == 1:
             car = Car(self._user_params['origin'], self._user_params['destination'])
             # car = Car(self.origin, self.destination)
-            if car.itinerary.legit[0] == 1:
+            if car.itinerary.legit[0] == 0:
                 itineraries = itineraries + [car.itinerary]
 
         if transportation['pedestrian'] == 1:
             pedestrian = Pedestrian(self._user_params['origin'], self._user_params['destination'])
             # pedestrian = Pedestrian(self.origin, self.destination)
-            if pedestrian.itinerary.legit[0] == 1:
+            if pedestrian.itinerary.legit[0] == 0:
                 itineraries = itineraries + [pedestrian.itinerary]
 
         if transportation['scooter'] == 1:
             scooter = Scooter(self._user_params['origin'], self._user_params['destination'])
             # scooter = Scooter(self.origin, self.destination)
-            if scooter.itinerary.legit[0] == 1:
+            if scooter.itinerary.legit[0] == 0:
                 itineraries = itineraries + [scooter.itinerary]
 
         if transportation['publicbike'] == 1:
             publicbike = PublicBike(self._user_params['origin'], self._user_params['destination'])
             # publicbike = PublicBike(self.origin, self.destination)
-            if publicbike.itinerary.legit[0] == 1:
+            if publicbike.itinerary.legit[0] == 0:
                 itineraries = itineraries + [publicbike.itinerary]
 
         if transportation['publictransport'] == 1:
             publictransport = PublicTransport(self._user_params['origin'], self._user_params['destination'])
             # publictransport = PublicTransport(self.origin, self.destination)
-            if publictransport.itinerary.legit[0] == 1:
+            if publictransport.itinerary.legit[0] == 0:
                 itineraries = itineraries + [publictransport.itinerary]
 
         if transportation['publicscooter'] == 1:
             publicscooter = PublicScooter(self._user_params['origin'], self._user_params['destination'])
             # publicscooter = PublicScooter(self.origin, self.destination)
-            if publicscooter.itinerary.legit[0] == 1:
+            if publicscooter.itinerary.legit[0] == 0:
                 itineraries = itineraries + [publicscooter.itinerary]
 
 
