@@ -9,19 +9,19 @@ class Car(Transportation):
     """
 
     def _get_itinerary(self):
-        legs = []
         legit = (1, "legit itinerary")
         url = self.url_here_routing_api('car')
-        resp, stat = get_request(url)
-        if stat != "successfull":
-            legit = (0, stat)
-            return([], legit)
+        response, status = get_request(url)
+        if status != "successful":
+            legit = (0, status)
+            return [], legit
         else:
-            data = resp.json()['response']['route'][0]['summary']
-            mode = {'type': 'car'}
-            leg = Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])
-            legs.append(leg)
-        return (legs,legit)
+            try:
+                data = response.json()['response']['route'][0]['summary']
+            except KeyError as e:
+                return [], (0, 'error parsing data')
+            mode = {'transportMode': 'car'}
+        return [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])], legit
 
 
 if __name__ == '__main__':
