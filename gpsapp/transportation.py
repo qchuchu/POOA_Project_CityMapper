@@ -25,14 +25,14 @@ def get_request(url):
     return [resp, stat]
 
 
-
 class Transportation:
 
     def __init__(self, origin, destination):
         self._origin = origin
         self._destination = destination
-        self._itinerary = Itinerary(origin, destination, self._get_itinerary()[0], self._get_itinerary()[1])
-        self._legit = self._get_itinerary()[1]
+        itinerary_response = self._get_itinerary()
+        self._itinerary = Itinerary(origin, destination, itinerary_response[0], itinerary_response[1])
+        self._legit = itinerary_response[1]
 
     @property
     def origin(self):
@@ -45,6 +45,10 @@ class Transportation:
     @property
     def itinerary(self):
         return self._itinerary
+
+    @property
+    def legit(self):
+        return self._legit
 
     # Abstract Method to be overriden in the children classes. The get_itinerary should return a list of legs.
     def _get_itinerary(self):
