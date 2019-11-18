@@ -50,4 +50,4 @@ class PublicScooter(Transportation):
 if __name__ == '__main__':
     print('********TRAJET A LIME**********')
     journey = PublicScooter((48.8586, 2.284249999999929), (48.725873, 2.262104))
-    print(journey.itinerary.get_number_of_legs())
+    print(journey.itinerary.legs)

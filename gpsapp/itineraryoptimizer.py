@@ -12,10 +12,6 @@ from transportation import *
 from leg import *
 from views import *
 
-"""
-Add Multi Threading
-"""
-
 
 class ItineraryOptimizer:
     """
@@ -39,7 +35,7 @@ class ItineraryOptimizer:
         self._has_disabilities()
 
     def _weather_filter(self):
-        """Update the transport mode"""
+        """Take into account the weather. If it's raining or """
         weather = Weather()
         gw = weather.get_weather()
         sky_desc = gw[0]
@@ -129,9 +125,13 @@ class ItineraryOptimizer:
             if public_scooter.is_legit():
                 self._itineraries = self._itineraries + [public_scooter.itinerary]
 
-
     def _sort_itineraries(self):
-        pass
+        if self._mode == 'fastest':
+            self._itineraries.sort(key=lambda x: x.get_total_duration())
+        elif self._mode == 'cheapest':
+            pass
+        elif self._mode == 'less_steps':
+            pass
 
     def run(self):
         self._select_itineraries()
