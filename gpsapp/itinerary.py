@@ -14,17 +14,13 @@ class Itinerary:
         else:
             self._legit = legit
 
-    def add(self, value):
-        # Check if value is Leg
-        self._legs.append(value)
-
-    @property
-    def legit(self):
-        return self._legit
-
     @property
     def legs(self):
         return self._legs
+
+    def add(self, value):
+        # Check if value is Leg
+        self._legs.append(value)
 
     def get_total_price(self):
         total_price = 0

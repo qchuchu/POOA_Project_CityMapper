@@ -17,7 +17,6 @@ class PublicTransport(Transportation):
         legs = []
         legit = (1, 'legit_itinerary')
         url = self.url_here_routing_api('public')
-        print(url)
         response, status = get_request(url)
         legs = []
         # Check if we can contact the HERE API

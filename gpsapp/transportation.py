@@ -50,6 +50,12 @@ class Transportation:
     def legit(self):
         return self._legit
 
+    def is_legit(self):
+        if self._legit[0] == 0:
+            return False
+        else:
+            return True
+
     # Abstract Method to be overriden in the children classes. The get_itinerary should return a list of legs.
     def _get_itinerary(self):
         pass

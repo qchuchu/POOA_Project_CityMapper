@@ -1,4 +1,4 @@
-import requests 
+import requests
 from weather import Weather
 from bike import Bike
 from car import Car
@@ -12,156 +12,136 @@ from transportation import *
 from leg import *
 from views import *
 
-
-
 """
 Add Multi Threading
 """
-
 
 
 class ItineraryOptimizer:
     """
     This class will optimize the different API Calls
     """
-
-    itineraries = []
-
-    def __init__(self, _user_params):
-#    def __init__(self, **user_params):
-
-        #for key, value in user_params.items():
-        #    setattr(self, key, value)
-        self._user_params = _user_params
-        self.transportation_mode = {'bike': 1, 'car': 1, 'pedestrian': 1, 'scooter': 1, 'publicbike': 1, 'publictransport': 1, 'publicscooter': 1}
-
-
+    def __init__(self, user_params):
+        for key, value in user_params.items():
+            setattr(self, "_" + key, value)
+        self._itineraries = []
+        self.transportation_mode = {'bike': 1, 'car': 1, 'pedestrian': 1, 'scooter': 1, 'public_bike': 1,
+                                    'public_transport': 1, 'public_scooter': 1}
 
     def _select_itineraries(self):
-#This fonction selects only the itineraries that the user can take based on the parameters he entered
+        # This fonction selects only the self._itineraries that the user can take based on the parameters he entered
+        self._weather_filter()
+        self._has_car()
+        self._has_scooter()
+        self._has_bike()
+        self._is_alone()
+        self._is_loaded()
+        self._has_disabilities()
 
-        self._weather()
-        self._hasacar()
-        self._hasascooter()
-        self._hasabike()
-        self._isalone()
-        self._isloaded()
-        self._hasdisabilities()
-        return self.transportation_mode
-
-    def _weather(self):
+    def _weather_filter(self):
         """Update the transport mode"""
-        w = Weather()
-        gw = w.get_weather()
+        weather = Weather()
+        gw = weather.get_weather()
         sky_desc = gw[0]
         temperature = gw[2]
         windspeed = gw[3]
-        if (sky_desc == 'sunny') or (sky_desc == 'clear') or (sky_desc == 'cloudy') or (sky_desc == 'hail'):
-            self.transportation_mode = self.transportation_mode
-        else :
-            self.transportation_mode['bike']=0
-            self.transportation_mode['scooter']=0
-            self.transportation_mode['pedestrian']=0
-            self.transportation_mode['publicscooter']=0
-            self.transportation_mode['publicbike']=0
-            return(self.transportation_mode)
+        if sky_desc not in ['sunny', 'clear', 'cloudy', 'hail']:
+            self.transportation_mode['bike'] = 0
+            self.transportation_mode['scooter'] = 0
+            self.transportation_mode['pedestrian'] = 0
+            self.transportation_mode['public_scooter'] = 0
+            self.transportation_mode['public_bike'] = 0
 
-    def _isalone(self):
-        if self._user_params['alone'] is False :
-            self.transportation_mode['bike']=0
-            self.transportation_mode['scooter']=0
-            self.transportation_mode['publicscooter']=0
-            self.transportation_mode['publicbike']=0
+    def _is_alone(self):
+        if not self._alone:
+            self.transportation_mode['bike'] = 0
+            self.transportation_mode['scooter'] = 0
+            self.transportation_mode['public_scooter'] = 0
+            self.transportation_mode['public_bike'] = 0
 
-    def _hasacar(self):
-        if ('car' in self._user_params['vehicles']) is False:
-            self.transportation_mode['car']=0
+    def _has_car(self):
+        if 'car' not in self._vehicles:
+            self.transportation_mode['car'] = 0
 
-    def _hasabike(self):
-        if ('bike' in self._user_params['vehicles']) is False:
-            self.transportation_mode['bike']=0
+    def _has_bike(self):
+        if 'bike' not in self._vehicles:
+            self.transportation_mode['bike'] = 0
 
-    def _hasascooter(self):
-        if ('scooter' in self._user_params['vehicles']) is False:
-            self.transportation_mode['scooter']=0
+    def _has_scooter(self):
+        if 'scooter' not in self._vehicles:
+            self.transportation_mode['scooter'] = 0
 
-    def _isloaded(self):
-        if self._user_params['loaded'] is True:
-            self.transportation_mode['bike']=0
-            self.transportation_mode['publicbike']=0
-            self.transportation_mode['scooter']=0
-            self.transportation_mode['publicscooter']=0
+    def _is_loaded(self):
+        if self._loaded:
+            self.transportation_mode['bike'] = 0
+            self.transportation_mode['public_bike'] = 0
+            self.transportation_mode['scooter'] = 0
+            self.transportation_mode['public_scooter'] = 0
 
-    def _hasdisabilities(self):
-        if self._user_params['disabled'] is True :
-            self.transportation_mode['bike']=0
-            self.transportation_mode['publicbike']=0
-            self.transportation_mode['scooter']=0
-            self.transportation_mode['publicscooter']=0
-            self.transportation_mode['pedestrian']=0
-
+    def _has_disabilities(self):
+        if self._disabled:
+            self.transportation_mode['bike'] = 0
+            self.transportation_mode['public_bike'] = 0
+            self.transportation_mode['scooter'] = 0
+            self.transportation_mode['public_scooter'] = 0
+            self.transportation_mode['pedestrian'] = 0
 
     def _calculate_itineraries(self):
 
-        transportation = self._select_itineraries()
-        itineraries = []
-# ajouter du multithreading
-        if transportation['bike']==1:
-            bike = Bike(self._user_params['origin'], self._user_params['destination'])
-            #bike = Bike(self.origin, self.destination)
-            if bike.itinerary.legit[0]==0:
-                itineraries = itineraries + [bike.itinerary]
+        # ajouter du multithreading
+        if self.transportation_mode['bike'] == 1:
+            bike = Bike(self._origin, self._destination)
+            # bike = Bike(self.origin, self.destination)
+            if bike.is_legit():
+                self._itineraries = self._itineraries + [bike.itinerary]
 
-        if transportation['car'] == 1:
-            car = Car(self._user_params['origin'], self._user_params['destination'])
+        if self.transportation_mode['car'] == 1:
+            car = Car(self._origin, self._destination)
             # car = Car(self.origin, self.destination)
-            if car.itinerary.legit[0] == 0:
-                itineraries = itineraries + [car.itinerary]
+            if car.is_legit():
+                self._itineraries = self._itineraries + [car.itinerary]
 
-        if transportation['pedestrian'] == 1:
-            pedestrian = Pedestrian(self._user_params['origin'], self._user_params['destination'])
+        if self.transportation_mode['pedestrian'] == 1:
+            pedestrian = Pedestrian(self._origin, self._destination)
             # pedestrian = Pedestrian(self.origin, self.destination)
-            if pedestrian.itinerary.legit[0] == 0:
-                itineraries = itineraries + [pedestrian.itinerary]
+            if pedestrian.is_legit():
+                self._itineraries = self._itineraries + [pedestrian.itinerary]
 
-        if transportation['scooter'] == 1:
-            scooter = Scooter(self._user_params['origin'], self._user_params['destination'])
+        if self.transportation_mode['scooter'] == 1:
+            scooter = Scooter(self._origin, self._destination)
             # scooter = Scooter(self.origin, self.destination)
-            if scooter.itinerary.legit[0] == 0:
-                itineraries = itineraries + [scooter.itinerary]
+            if scooter.is_legit():
+                self._itineraries = self._itineraries + [scooter.itinerary]
 
-        if transportation['publicbike'] == 1:
-            publicbike = PublicBike(self._user_params['origin'], self._user_params['destination'])
-            # publicbike = PublicBike(self.origin, self.destination)
-            if publicbike.itinerary.legit[0] == 0:
-                itineraries = itineraries + [publicbike.itinerary]
+        if self.transportation_mode['public_bike'] == 1:
+            public_bike = PublicBike(self._origin, self._destination)
+            # public_bike = public_bike(self.origin, self.destination)
+            if public_bike.is_legit():
+                self._itineraries = self._itineraries + [public_bike.itinerary]
 
-        if transportation['publictransport'] == 1:
-            publictransport = PublicTransport(self._user_params['origin'], self._user_params['destination'])
-            # publictransport = PublicTransport(self.origin, self.destination)
-            if publictransport.itinerary.legit[0] == 0:
-                itineraries = itineraries + [publictransport.itinerary]
+        if self.transportation_mode['public_transport'] == 1:
+            public_transport = PublicTransport(self._origin, self._destination)
+            if public_transport.is_legit():
+                self._itineraries = self._itineraries + [public_transport.itinerary]
 
-        if transportation['publicscooter'] == 1:
-            publicscooter = PublicScooter(self._user_params['origin'], self._user_params['destination'])
-            # publicscooter = PublicScooter(self.origin, self.destination)
-            if publicscooter.itinerary.legit[0] == 0:
-                itineraries = itineraries + [publicscooter.itinerary]
+        if self.transportation_mode['public_scooter'] == 1:
+            public_scooter = PublicScooter(self._origin, self._destination)
+            if public_scooter.is_legit():
+                self._itineraries = self._itineraries + [public_scooter.itinerary]
 
 
-        return itineraries
+    def _sort_itineraries(self):
+        pass
 
-def sort_itineraries(self):
-    pass
-
-
-
-
-
-
-io = ItineraryOptimizer({'origin': (48.8586, 2.284249999999929), 'destination': (48.725873, 2.262104), 'vehicles': ['car', 'scooter'], 'mode': 'fastest','alone': True, 'loaded': False, 'disabled': False})
-print(io._select_itineraries())
-print(io._calculate_itineraries())
+    def run(self):
+        self._select_itineraries()
+        self._calculate_itineraries()
+        self._sort_itineraries()
 
 
-
+if __name__ == '__main__':
+    io = ItineraryOptimizer(
+        {'origin': (48.8586, 2.284249999999929), 'destination': (48.725873, 2.262104), 'vehicles': ['car', 'scooter'],
+         'mode': 'fastest', 'alone': True, 'loaded': False, 'disabled': False})
+    io.run()
+    print(io._itineraries)
