@@ -37,17 +37,17 @@ class PublicScooter(Transportation):
         try:
             scooter = self.get_closest_scooter()
             scooter_location = scooter['lat'], scooter['lng']
-        except:
+        except :
             legit = (0, 'no scooter found')
-            return ([], legit)
+            return [], legit
         pedestrian_origin = Pedestrian(self.origin, scooter_location).itinerary
         scooter_travel = Scooter(scooter_location, self.destination).itinerary
         scooter_travel.legs[0].mode = {'type': 'scooter', 'provider': scooter['provider']}
         # We suppose that we can leave the Lime
         final = pedestrian_origin + scooter_travel
-        return final.legs
+        return final.legs, legit
 
 if __name__ == '__main__':
     print('********TRAJET A LIME**********')
     journey = PublicScooter((48.8586, 2.284249999999929), (48.725873, 2.262104))
-    print(journey.itinerary.get_number_of_legs())
+    print(journey.itinerary.legs)
