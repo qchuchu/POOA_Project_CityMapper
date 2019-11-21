@@ -43,6 +43,7 @@ class ItineraryOptimizer:
         weather = Weather()
         gw = weather.get_weather()
         sky_desc = gw[0]
+        #enlever
         temperature = gw[2]
         windspeed = gw[3]
         if sky_desc not in ['sunny', 'clear', 'cloudy', 'hail']:
@@ -131,6 +132,7 @@ class ItineraryOptimizer:
 
 
     def _sort_itineraries(self):
+        
         pass
 
     def run(self):
