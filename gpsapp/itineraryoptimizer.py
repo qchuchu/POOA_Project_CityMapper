@@ -11,6 +11,7 @@ from scooter import Scooter
 from transportation import *
 from leg import *
 from views import *
+import threading
 
 
 class ItineraryOptimizer:
@@ -24,10 +25,11 @@ class ItineraryOptimizer:
         self._itineraries = []
         self.transportation_mode = {'bike': 1, 'car': 1, 'pedestrian': 1, 'scooter': 1, 'public_bike': 1,
                                     'public_transport': 1, 'public_scooter': 1}
+        self.lock = threading.Lock()
 
     def _select_itineraries(self):
         # This fonction selects only the self._itineraries that the user can take based on the parameters he entered
-        #self._weather_filter()
+        self._weather_filter()
         self._has_car()
         self._has_scooter()
         self._has_bike()
@@ -40,9 +42,8 @@ class ItineraryOptimizer:
         weather = Weather()
         gw = weather.get_weather()
         sky_desc = gw[0]
-        #enlever
-        temperature = gw[2]
-        windspeed = gw[3]
+        #temperature = gw[2]
+        #windspeed = gw[3]
         if sky_desc not in ['sunny', 'clear', 'cloudy', 'hail']:
             self.transportation_mode['bike'] = 0
             self.transportation_mode['scooter'] = 0
@@ -64,10 +65,14 @@ class ItineraryOptimizer:
     def _has_bike(self):
         if 'bike' not in self._vehicles:
             self.transportation_mode['bike'] = 0
+        elif 'bike' in self._vehicles:
+            self.transportation_mode['public_bike'] = 0
 
     def _has_scooter(self):
         if 'scooter' not in self._vehicles:
             self.transportation_mode['scooter'] = 0
+        elif 'scooter' in self._vehicles:
+            self.transportation_mode['public_scooter'] = 0
 
     def _is_loaded(self):
         if self._loaded:
@@ -84,58 +89,101 @@ class ItineraryOptimizer:
             self.transportation_mode['public_scooter'] = 0
             self.transportation_mode['pedestrian'] = 0
 
-    def _calculate_itineraries(self):
 
-        # ajouter du multithreading
+#togodebut
+
+    def bike_itinerary(self):
         if self.transportation_mode['bike'] == 1:
             bike = Bike(self._origin, self._destination)
             # bike = Bike(self.origin, self.destination)
             if bike.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [bike.itinerary]
+                self.lock.release()
 
+    def car_itinerary(self):
         if self.transportation_mode['car'] == 1:
             car = Car(self._origin, self._destination)
             # car = Car(self.origin, self.destination)
             if car.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [car.itinerary]
+                self.lock.release()
 
+    def pedestrian_itinerary(self):
         if self.transportation_mode['pedestrian'] == 1:
             pedestrian = Pedestrian(self._origin, self._destination)
             # pedestrian = Pedestrian(self.origin, self.destination)
             if pedestrian.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [pedestrian.itinerary]
+                self.lock.release()
 
+    def scooter_itinerary(self):
         if self.transportation_mode['scooter'] == 1:
             scooter = Scooter(self._origin, self._destination)
             # scooter = Scooter(self.origin, self.destination)
             if scooter.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [scooter.itinerary]
+                self.lock.release()
 
+    def public_bike_itinerary(self):
         if self.transportation_mode['public_bike'] == 1:
             public_bike = PublicBike(self._origin, self._destination)
             # public_bike = public_bike(self.origin, self.destination)
             if public_bike.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [public_bike.itinerary]
+                self.lock.release()
 
+    def public_transportation_itinerary(self):
         if self.transportation_mode['public_transport'] == 1:
             public_transport = PublicTransport(self._origin, self._destination)
             if public_transport.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [public_transport.itinerary]
+                self.lock.release()
 
+    def public_scooter_itinerary(self):
         if self.transportation_mode['public_scooter'] == 1:
             public_scooter = PublicScooter(self._origin, self._destination)
             if public_scooter.is_legit():
+                self.lock.acquire()
                 self._itineraries = self._itineraries + [public_scooter.itinerary]
+                self.lock.release()
+
+    def _calculate_itineraries(self):
+        threading_bike = threading.Thread(target=self.bike_itinerary)
+        threading_car = threading.Thread(target=self.car_itinerary)
+        threading_pedestrian = threading.Thread(target=self.pedestrian_itinerary)
+        threading_scooter = threading.Thread(target=self.scooter_itinerary)
+        threading_public_bike = threading.Thread(target=self.public_bike_itinerary)
+        threading_public_transportation = threading.Thread(target=self.public_transportation_itinerary)
+        threading_public_scooter = threading.Thread(target=self.public_scooter_itinerary)
+        list_threading = [threading_bike, threading_car, threading_pedestrian, threading_scooter, threading_public_bike,
+                          threading_public_transportation, threading_public_scooter]
+        for thread in list_threading:
+            thread.start()
+        for thread in list_threading:
+            thread.join()
+        pass
+
+
+#togofin
+
 
     def _sort_itineraries(self):
 
         if self._mode == 'fastest':
             self._itineraries.sort(key=lambda x: x.get_total_duration())
         elif self._mode == 'cheapest':
-            self.itineraries.sort(key=lambda2 x:x.get_total_price())
-            pass
-        elif self._mode == 'less_steps':
-            pass
+            self._itineraries.sort(key=lambda x:x.get_total_price())
+        elif self.mode == 'less_steps':
+            self._itineraries.sort(key=lambda  x:x.get_number_of_legs())
+        elif self.mode == 'shortest':
+            self._itineraries.sort(key=lambda x:x.get_total_distance())
+
 
 
     def run(self):
@@ -146,7 +194,13 @@ class ItineraryOptimizer:
 
 if __name__ == '__main__':
     io = ItineraryOptimizer(
-        {'origin': (48.8586, 2.284249999999929), 'destination': (48.725873, 2.262104), 'vehicles': ['car', 'scooter'],
+        {'origin': (48.848, 2.28454), 'destination': (48.881, 2.29562), 'vehicles': ['car', 'scooter'],
          'mode': 'fastest', 'alone': True, 'loaded': False, 'disabled': False})
     io.run()
-    print(io._itineraries)
+    for itinerary in io._itineraries:
+        print(itinerary.get_total_duration())
+        #print(itinerary._legs)
+        #for l in itinerary._legs:
+        #    print(l._mode)
+
+

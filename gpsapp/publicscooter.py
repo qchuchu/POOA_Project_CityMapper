@@ -45,6 +45,7 @@ class PublicScooter(Transportation):
         scooter_travel.legs[0].mode = {'type': 'scooter', 'provider': scooter['provider']}
         # We suppose that we can leave the Lime
         final = pedestrian_origin + scooter_travel
+        #final._legs[1]._price() = 1 + 0.15 * final._legs[1]._duration()
         return final.legs, legit
 
 if __name__ == '__main__':

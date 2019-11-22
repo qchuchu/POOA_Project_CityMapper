@@ -80,3 +80,4 @@ class Transportation:
             mode = "&mode=fastest;" + transport_mode
         language = "&language=fr-fr"
         return base + app_id + app_code + origin + destination + mode + language
+
