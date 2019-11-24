@@ -68,7 +68,7 @@ class PublicBike(Transportation):
             assert (bike_travel.legit == (1, "legit itinerary"))
         except AssertionError as e:
             return [], bike_travel.legit
-
+        bike_travel.itinerary.legs[0].mode = {'transport_mode': 'publicBike', 'provider': 'Velib'}
         pedestrian_destination = Pedestrian(destination_borne, self.destination)
         try:
             assert (pedestrian_destination.legit == (1, "legit itinerary"))

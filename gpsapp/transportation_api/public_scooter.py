@@ -44,7 +44,7 @@ class PublicScooter(Transportation):
         pedestrian_origin = Pedestrian(self.origin, scooter_location).itinerary
         # Calculating the itinerary from Scooter to Endpoint
         scooter_travel = Scooter(scooter_location, self.destination).itinerary
-        scooter_travel.legs[0].mode = {'transport_mode': 'scooter', 'provider': scooter['provider']['name']}
+        scooter_travel.legs[0].mode = {'transport_mode': 'publicScooter', 'provider': scooter['provider']['name']}
         # A Lime is 1 euro + 0.20 euro per minute
         scooter_travel.legs[0].price = 1 + scooter_travel.legs[0].duration/60*0.2
         # We suppose that we can leave the Lime anywhere

@@ -26,23 +26,11 @@ class ItineraryOptimizer:
     def itineraries(self):
         return self._itineraries
 
-    def _select_itineraries(self):
-        # This fonction selects only the self._itineraries that the user can take based on the parameters he entered
-        #self._weather_filter()
-        self._has_car()
-        self._has_scooter()
-        self._has_bike()
-        self._is_alone()
-        self._is_loaded()
-        self._has_disabilities()
-
     def _weather_filter(self):
         """Take into account the weather. If it's raining or """
         weather = Weather()
         gw = weather.get_weather()
         sky_desc = gw[0]
-        #temperature = gw[2]
-        #windspeed = gw[3]
         if sky_desc not in ['sunny', 'clear', 'cloudy', 'hail']:
             self.transportation_mode['bike'] = 0
             self.transportation_mode['scooter'] = 0
@@ -88,9 +76,6 @@ class ItineraryOptimizer:
             self.transportation_mode['public_scooter'] = 0
             self.transportation_mode['pedestrian'] = 0
 
-
-#togodebut
-
     def bike_itinerary(self):
         if self.transportation_mode['bike'] == 1:
             bike = Bike(self._origin, self._destination)
@@ -112,7 +97,6 @@ class ItineraryOptimizer:
     def pedestrian_itinerary(self):
         if self.transportation_mode['pedestrian'] == 1:
             pedestrian = Pedestrian(self._origin, self._destination)
-            # pedestrian = Pedestrian(self.origin, self.destination)
             if pedestrian.is_legit():
                 self.lock.acquire()
                 self._itineraries = self._itineraries + [pedestrian.itinerary]
@@ -121,7 +105,6 @@ class ItineraryOptimizer:
     def scooter_itinerary(self):
         if self.transportation_mode['scooter'] == 1:
             scooter = Scooter(self._origin, self._destination)
-            # scooter = Scooter(self.origin, self.destination)
             if scooter.is_legit():
                 self.lock.acquire()
                 self._itineraries = self._itineraries + [scooter.itinerary]
@@ -130,7 +113,6 @@ class ItineraryOptimizer:
     def public_bike_itinerary(self):
         if self.transportation_mode['public_bike'] == 1:
             public_bike = PublicBike(self._origin, self._destination)
-            # public_bike = public_bike(self.origin, self.destination)
             if public_bike.is_legit():
                 self.lock.acquire()
                 self._itineraries = self._itineraries + [public_bike.itinerary]
@@ -152,6 +134,15 @@ class ItineraryOptimizer:
                 self._itineraries = self._itineraries + [public_scooter.itinerary]
                 self.lock.release()
 
+    def _select_itineraries(self):
+        self._weather_filter()
+        self._has_car()
+        self._has_scooter()
+        self._has_bike()
+        self._is_alone()
+        self._is_loaded()
+        self._has_disabilities()
+
     def _calculate_itineraries(self):
         threading_bike = threading.Thread(target=self.bike_itinerary)
         threading_car = threading.Thread(target=self.car_itinerary)
@@ -171,13 +162,18 @@ class ItineraryOptimizer:
     def _sort_itineraries(self):
 
         if self._mode == 'fastest':
-            self._itineraries.sort(key=lambda x: x.get_total_duration())
+            self.itineraries.sort(key=lambda x: x.get_total_duration())
         elif self._mode == 'cheapest':
-            self._itineraries.sort(key=lambda x: x.get_total_price())
+            self.itineraries.sort(key=lambda x: x.get_total_price())
         elif self._mode == 'less_steps':
-            self._itineraries.sort(key=lambda x: x.get_number_of_legs())
+            self.itineraries.sort(key=lambda x: x.get_number_of_legs())
         elif self._mode == 'shortest':
-            self._itineraries.sort(key=lambda x: x.get_total_distance())
+            self.itineraries.sort(key=lambda x: x.get_total_distance())
+
+    def _convert_all_origin_destination(self):
+        for itinerary in self.itineraries:
+            for leg in itinerary.legs:
+                leg.convert_origin_destination()
 
     def get_itineraries_json(self):
         final_itineraries = []
@@ -190,14 +186,7 @@ class ItineraryOptimizer:
         self._select_itineraries()
         self._calculate_itineraries()
         self._sort_itineraries()
+        self._convert_all_origin_destination()
 
-
-if __name__ == '__main__':
-    io = ItineraryOptimizer(
-        {'origin': (48.848, 2.28454), 'destination': (48.881, 2.29562), 'vehicles': ['car', 'scooter'],
-         'mode': 'fastest', 'alone': True, 'loaded': False, 'disabled': False})
-    io.run()
-    for itinerary in io._itineraries:
-        print(itinerary.get_total_duration())
 
 
