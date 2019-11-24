@@ -1,6 +1,6 @@
 # This file contains the views of the function
 from app import app
-from flask import request, jsonify
+from flask import request
 from flask_cors import CORS
 from transportation_api.itinerary_optimizer import ItineraryOptimizer
 
