@@ -1,6 +1,10 @@
-from views import app
-from itinerary import Itinerary
+from transportation_api.itinerary import Itinerary
 import requests
+
+APP_ID = 'yZ9PTsD28Zmv1i33vsKj'
+
+APP_CODE = '2w2uary6rOXjXAl9KyzsyA'
+
 
 def get_request(url):
     try:
@@ -31,8 +35,12 @@ class Transportation:
         self._origin = origin
         self._destination = destination
         itinerary_response = self._get_itinerary()
-        self._itinerary = Itinerary(origin, destination, itinerary_response[0], itinerary_response[1])
-        self._legit = itinerary_response[1]
+        try:
+            self._itinerary = Itinerary(origin, destination, itinerary_response[0], itinerary_response[1])
+            self._legit = itinerary_response[2]
+        except IndexError as e:
+            self._itinerary = Itinerary(origin, destination, transport_type="not_found")
+            self._legit = itinerary_response[1]
 
     @property
     def origin(self):
@@ -70,8 +78,8 @@ class Transportation:
         """
 
         base = 'https://route.api.here.com/routing/7.2/calculateroute.json'
-        app_id = "?app_id=" + app.config['APP_ID']
-        app_code = "&app_code=" + app.config['APP_CODE']
+        app_id = "?app_id=" + APP_ID
+        app_code = "&app_code=" + APP_CODE
         origin = "&waypoint0=geo!{},{}".format(self._origin[0], self._origin[1])
         destination = "&waypoint1=geo!{},{}".format(self.destination[0], self.destination[1])
         if transport_mode == 'public':

@@ -1,6 +1,5 @@
-import requests
-from transportation import Transportation, get_request
-from leg import Leg
+from transportation_api.transportation import Transportation, get_request
+from transportation_api.leg import Leg
 
 
 class Pedestrian(Transportation):
@@ -18,11 +17,5 @@ class Pedestrian(Transportation):
             except KeyError as e:
                 legit = (1, "error parsing data")
                 return [], legit
-        mode = {'transportMode': 'pedestrian'}
-        return [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])], legit
-
-
-if __name__ == '__main__':
-    print('********TRAJET A PIED**********')
-    journey = Pedestrian((48.8586, 2.284249999999929), (48.725873, 2.262104))
-    print(journey.itinerary)
+        mode = {'transport_mode': 'pedestrian'}
+        return "pedestrian", [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])], legit

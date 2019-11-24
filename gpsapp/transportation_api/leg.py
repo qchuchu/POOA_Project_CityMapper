@@ -40,6 +40,10 @@ class Leg:
     def price(self, value):
         self._price = value
 
+    def get_leg_json(self):
+        leg_json = {'mode': self.mode, 'duration': self.duration, 'distance': self.distance, 'price': self.price,
+                    'origin': self.origin, 'destination': self.destination}
+        return leg_json
 
 
 

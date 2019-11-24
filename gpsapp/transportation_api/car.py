@@ -1,6 +1,6 @@
 import requests
-from transportation import Transportation, get_request
-from leg import Leg
+from transportation_api.transportation import Transportation, get_request
+from transportation_api.leg import Leg
 
 
 class Car(Transportation):
@@ -20,13 +20,8 @@ class Car(Transportation):
                 data = response.json()['response']['route'][0]['summary']
             except KeyError as e:
                 return [], (0, 'error parsing data')
-            mode = {'transportMode': 'car'}
-        return [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])], legit
-
-
-if __name__ == '__main__':
-    massy = ('48.7228', '2.2625900000000456')
-    eiffel = ('48.858370', '2.294481')
-    car = Car(massy, eiffel)
-    print(car._get_itinerary())
+            mode = {'transport_mode': 'car'}
+        price = data['distance'] / 1000 * 1.6 * (6 / 100)
+        car_leg = [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'], price)]
+        return "car", car_leg, legit
 

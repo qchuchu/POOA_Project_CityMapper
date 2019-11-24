@@ -1,22 +1,17 @@
-import requests
-from weather import Weather
-from bike import Bike
-from car import Car
-from itinerary import *
-from pedestrian import Pedestrian
-from publicbike import PublicBike
-from publicscooter import PublicScooter
-from publictransport import PublicTransport
-from scooter import Scooter
-from transportation import *
-from leg import *
-from views import *
+from transportation_api.weather import Weather
+from transportation_api.bike import Bike
+from transportation_api.car import Car
+from transportation_api.pedestrian import Pedestrian
+from transportation_api.public_bike import PublicBike
+from transportation_api.public_scooter import PublicScooter
+from transportation_api.public_transport import PublicTransport
+from transportation_api.scooter import Scooter
 import threading
 
 
 class ItineraryOptimizer:
     """
-    This class will optimize the different API Calls
+    This class will optimize the different API Calls, and return a dictionnary containing the different informations
     """
 
     def __init__(self, user_params):
@@ -27,9 +22,13 @@ class ItineraryOptimizer:
                                     'public_transport': 1, 'public_scooter': 1}
         self.lock = threading.Lock()
 
+    @property
+    def itineraries(self):
+        return self._itineraries
+
     def _select_itineraries(self):
         # This fonction selects only the self._itineraries that the user can take based on the parameters he entered
-        self._weather_filter()
+        #self._weather_filter()
         self._has_car()
         self._has_scooter()
         self._has_bike()
@@ -169,22 +168,23 @@ class ItineraryOptimizer:
             thread.join()
         pass
 
-
-#togofin
-
-
     def _sort_itineraries(self):
 
         if self._mode == 'fastest':
             self._itineraries.sort(key=lambda x: x.get_total_duration())
         elif self._mode == 'cheapest':
-            self._itineraries.sort(key=lambda x:x.get_total_price())
-        elif self.mode == 'less_steps':
-            self._itineraries.sort(key=lambda  x:x.get_number_of_legs())
-        elif self.mode == 'shortest':
-            self._itineraries.sort(key=lambda x:x.get_total_distance())
+            self._itineraries.sort(key=lambda x: x.get_total_price())
+        elif self._mode == 'less_steps':
+            self._itineraries.sort(key=lambda x: x.get_number_of_legs())
+        elif self._mode == 'shortest':
+            self._itineraries.sort(key=lambda x: x.get_total_distance())
 
-
+    def get_itineraries_json(self):
+        final_itineraries = []
+        for index, itinerary in enumerate(self.itineraries):
+            itinerary_json = itinerary.get_itinerary_json()
+            final_itineraries.append(itinerary_json)
+        return final_itineraries
 
     def run(self):
         self._select_itineraries()
@@ -199,8 +199,5 @@ if __name__ == '__main__':
     io.run()
     for itinerary in io._itineraries:
         print(itinerary.get_total_duration())
-        #print(itinerary._legs)
-        #for l in itinerary._legs:
-        #    print(l._mode)
 
 

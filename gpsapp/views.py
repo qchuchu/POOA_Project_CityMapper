@@ -1,23 +1,25 @@
 # This file contains the views of the function
-from flask import Flask, request
+from app import app
+from flask import request, jsonify
+from flask_cors import CORS
+from transportation_api.itinerary_optimizer import ItineraryOptimizer
 
-app = Flask(__name__)
+ITINERARIES = []
 
-# Config options - Make sure you created a 'config.py' file.
-app.config.from_object('config')
-
-
-@app.route('/')
-def index():
-    return "Hello monde !"
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-@app.route('/itinerary', methods=['POST'])
+@app.route('/itineraries', methods=['GET', 'POST'])
 def get_best_itinerary():
-    # Get the user params and load the model
-    pass
-
-
-if __name__ == "__main__":
-    print(app.config['APP_ID'])
-    app.run()
+    global ITINERARIES
+    response_object = {'status': 'success'}
+    if request.method == 'POST':
+        del ITINERARIES[:]
+        data = request.get_json()
+        optimizer = ItineraryOptimizer(data)
+        optimizer.run()
+        response_object['itineraries'] = optimizer.get_itineraries_json()
+        ITINERARIES = response_object['itineraries']
+    elif request.method == 'GET':
+        response_object['itineraries'] = ITINERARIES
+    return response_object

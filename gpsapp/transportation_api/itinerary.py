@@ -2,9 +2,11 @@ class Itinerary:
     """
     Itinerary object that contains all the information about the itinerary given an origin and a destination
     """
-    def __init__(self, origin, destination, legs=None, legit = None):
+
+    def __init__(self, origin, destination, transport_type=None, legs=None, legit=None):
         self.origin = origin
         self.destination = destination
+        self.type = transport_type
         self._legs = [] if legs is None else legs
         if legit is None:
             if legs is None:
@@ -43,8 +45,15 @@ class Itinerary:
     def get_number_of_legs(self):
         return len(self.legs)
 
+    def get_itinerary_json(self):
+        itinerary_json = {'type': self.type, 'duration': self.get_total_duration(), 'price': self.get_total_price(),
+                          'origin': self.origin, 'destination': self.destination, 'legs': []}
+        for leg in self.legs:
+            itinerary_json['legs'].append(leg.get_leg_json())
+        return itinerary_json
+
     def __add__(self, other):
         origin = self.origin
         destination = other.destination
         legs = self.legs + other.legs
-        return Itinerary(origin, destination, legs)
+        return Itinerary(origin, destination, legs=legs)

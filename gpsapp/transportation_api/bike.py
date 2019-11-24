@@ -1,6 +1,6 @@
 import requests
-from transportation import Transportation, get_request
-from leg import Leg
+from transportation_api.transportation import Transportation, get_request
+from transportation_api.leg import Leg
 
 
 class Bike(Transportation):
@@ -18,7 +18,7 @@ class Bike(Transportation):
             except KeyError as e:
                 return [], (0, 'error parsing data')
             mode = {'transport_mode': 'bike'}
-        return [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])], legit
+        return "bike", [Leg(self.origin, self.destination, mode, data['distance'], data['travelTime'])], legit
 
 
 if __name__ == '__main__':

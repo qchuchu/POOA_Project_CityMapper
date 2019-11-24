@@ -1,9 +1,6 @@
-import requests
-
-
-from transportation import Transportation, get_request
-from pedestrian import Pedestrian
-from bike import Bike
+from transportation_api.transportation import Transportation, get_request
+from transportation_api.pedestrian import Pedestrian
+from transportation_api.bike import Bike
 
 
 class PublicBike(Transportation):
@@ -31,8 +28,8 @@ class PublicBike(Transportation):
         else:
             try:
                 data = response.json()['records'][0]['fields']['geo']
-            except KeyError as e:
-                return "KeyError"
+            except (IndexError, KeyError) as e:
+                return e
         return data[0], data[1]
 
     def get_closest_public_bike_terminal_destination(self):
@@ -79,10 +76,10 @@ class PublicBike(Transportation):
         except AssertionError as e:
             return [], pedestrian_destination.legit
 
+        # Set up the price 
+        bike_travel.itinerary.legs[0].price = 1 + bike_travel.itinerary.legs[0].duration // (30*60)
+
         itinerary = pedestrian_origin.itinerary + bike_travel.itinerary + pedestrian_destination.itinerary
-        return itinerary.legs, (1, "legit itinerary")
 
+        return "publicBike", itinerary.legs, (1, "legit itinerary")
 
-if __name__ == '__main__':
-    journey = PublicBike((48.871192, 2.351512), (48.840137, 2.351407))
-    print(journey.itinerary)
