@@ -57,7 +57,7 @@ The Front-End Server installation process is available on the adapted Github :
 [https://github.com/qchuchu/vue_gpsapp](https://github.com/qchuchu/vue_gpsapp)
 
 Once you have installed all the dependencies and launched the server, the front app will be available at the following
-address : `localhost:8080`, and will directly call the API Server at http://127.0.0.1:5000/itineraries, by sending
+address : http://localhost:8080, and will directly call the API Server at http://127.0.0.1:5000/itineraries, by sending
 `POST` requests.
 
 # 2. Project's Description
@@ -69,4 +69,12 @@ the parameters that you need to send to receive a response :
 
 - origin : [latitude, longitude] or (latitude, longitude) where latitude and longitude are `type:float`.
 - destination : [latitude, longitude] or (latitude, longitude) where latitude and longitude are `type:float`.
-- 
+- vehicles : ["car", "scooter", "bike"] list of string of different vehicles that the user own.
+- mode : "fastest", "cheapest", "less_steps", "shortest" are the different modes of your request. This will sort in 
+a different way the list of itineraries (the most relevant itineraries will be on top of the results).
+- alone : *boolean*. Set it to `true` if you are travelling alone, `false` if not.
+- loaded : *boolean*. Set it to `true` if you are travelling with a lot of stuff, `false` if not.
+- disabled : *boolean*. Set it to `true` if you have any disabilities, `false` if not.
+
+The API is also taking into account the weather predictions, in order not to send biking/walking/scooting itineraries
+if the weather conditions are too difficult.
