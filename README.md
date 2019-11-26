@@ -60,9 +60,9 @@ Once you have installed all the dependencies and launched the server, the front 
 address : http://localhost:8080, and will directly call the API Server at http://127.0.0.1:5000/itineraries, by sending
 `POST` requests.
 
-# 2. Project's Description
+## 2. Project's Description
 
-## 2.1 How to call the API
+### 2.1 How to call the API
 
 Our API have only one endpoint, that only be accessed by sending `POST` requests, by sending a JSON. Here are
 the parameters that you need to send to receive a response :
