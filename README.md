@@ -7,10 +7,7 @@ Centrale Mapper is an app that enables you to look at the different modes of tra
 destination (in the region of Île-de-France, France only). The application can propose different modes of transport :
 car, bike, walking, public transport, public bikes and public scooters.
 
-On this repository, you can only find the backend part of the application. The front-end part is available here : 
-[https://github.com/qchuchu/vue_gpsapp](https://github.com/qchuchu/vue_gpsapp).
-
-The front-end server have been deployed on Netlify and the back-end on Heroku. The app is now available on :
+The app is available online on :
 [https://gpsapp-pooa.netlify.com/](https://gpsapp-pooa.netlify.com/).
 
 ## 1. Installation
@@ -53,12 +50,8 @@ The only method allowed is `POST`. Please see below to see how you can call the 
 
 ## 1.2 Front-End Server
 
-The Front-End Server installation process is available on the adapted Github : 
-[https://github.com/qchuchu/vue_gpsapp](https://github.com/qchuchu/vue_gpsapp)
-
-Once you have installed all the dependencies and launched the server, the front app will be available at the following
-address : http://localhost:8080, and will directly call the API Server at http://127.0.0.1:5000/itineraries, by sending
-`POST` requests.
+The Front-End Server is deployed on the following address : http://gpsapp-pooa-local.netlify.com.
+Once the API server is launched, you will be able to make itinerary queries on this address !
 
 ## 2. Project's Description
 
