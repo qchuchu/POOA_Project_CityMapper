@@ -1,5 +1,6 @@
 import requests
 
+
 class Leg:
 
     def __init__(self, origin, destination, mode=None, distance=None, duration=None, price=None):
@@ -66,11 +67,6 @@ class Leg:
         except (IndexError, KeyError) as e:
             pass
 
-
-if __name__ == '__main__':
-    leg = Leg((48.8586, 2.284249999999929), (48.725873, 2.262104))
-    leg.convert_origin_destination()
-    print(leg.get_leg_json())
 
 
 

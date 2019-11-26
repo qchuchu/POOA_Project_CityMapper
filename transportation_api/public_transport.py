@@ -1,8 +1,6 @@
-import requests
 from transportation_api.transportation import Transportation, get_request
 from bs4 import BeautifulSoup
 from transportation_api.leg import Leg
-from transportation_api.pedestrian import Pedestrian
 
 
 def html_parser_class_text(html):
@@ -118,8 +116,3 @@ class PublicTransport(Transportation):
             legit = (0, "error in parsing data")
             return [], legit
         return self._extract_legs_from_data(data)
-
-
-if __name__ == '__main__':
-    journey = PublicTransport((48.8586, 2.284249999999929), (48.725873, 2.262104))
-    print(journey.itinerary.get_itinerary_json())

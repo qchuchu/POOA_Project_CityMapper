@@ -1,4 +1,3 @@
-import requests
 from transportation_api.transportation import Transportation, get_request
 from transportation_api.leg import Leg
 

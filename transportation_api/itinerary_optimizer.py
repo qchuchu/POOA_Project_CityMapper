@@ -27,7 +27,6 @@ class ItineraryOptimizer:
         return self._itineraries
 
     def _weather_filter(self):
-        """Take into account the weather. If it's raining or """
         weather = Weather()
         gw = weather.get_weather()
         sky_desc = gw[0]
@@ -79,7 +78,6 @@ class ItineraryOptimizer:
     def bike_itinerary(self):
         if self.transportation_mode['bike'] == 1:
             bike = Bike(self._origin, self._destination)
-            # bike = Bike(self.origin, self.destination)
             if bike.is_legit():
                 self.lock.acquire()
                 self._itineraries = self._itineraries + [bike.itinerary]
@@ -88,7 +86,6 @@ class ItineraryOptimizer:
     def car_itinerary(self):
         if self.transportation_mode['car'] == 1:
             car = Car(self._origin, self._destination)
-            # car = Car(self.origin, self.destination)
             if car.is_legit():
                 self.lock.acquire()
                 self._itineraries = self._itineraries + [car.itinerary]

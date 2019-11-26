@@ -69,13 +69,6 @@ class Transportation:
         pass
 
     def url_here_routing_api(self, transport_mode):
-        """
-        This function returns the URL to make personalized API Calls on Here
-        :param transport_mode:
-        :param origin: Origin GPS Coordinates, tuple shaped
-        :param destination: Destination GPS Coordinates, tuple shaped
-        :return: url string
-        """
 
         base = 'https://route.api.here.com/routing/7.2/calculateroute.json'
         app_id = "?app_id=" + APP_ID
